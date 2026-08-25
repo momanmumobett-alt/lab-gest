@@ -114,7 +114,7 @@
       .order("id", { ascending: true });
 
     if (error) {
-      message.textContent = "حدث خطأ في تحميل العتاد: " + error.message;
+      message.textContent = "ERROR: " + error.message;
       return;
     }
 
