@@ -1,487 +1,151 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAB-GEST</title>
 
-<title>LAB-GEST | نظام تسيير المخبر</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f7fb;
-    color: #1f2937;
-}
-
-/* القائمة الجانبية */
-.sidebar {
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 250px;
-    height: 100vh;
-    background: #123b5d;
-    color: white;
-    padding: 25px 15px;
-}
-
-.logo {
-    text-align: center;
-    font-size: 25px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    text-align: center;
-    font-size: 12px;
-    opacity: .7;
-    margin-bottom: 30px;
-}
-
-.menu {
-    list-style: none;
-}
-
-.menu li {
-    margin-bottom: 7px;
-}
-
-.menu button {
-    width: 100%;
-    border: none;
-    background: transparent;
-    color: white;
-    text-align: right;
-    padding: 13px;
-    border-radius: 10px;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.menu button:hover,
-.menu button.active {
-    background: #1d5b87;
-}
-
-/* المحتوى */
-.main {
-    margin-right: 250px;
-    padding: 30px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.header h1 {
-    font-size: 28px;
-}
-
-.header p {
-    color: #6b7280;
-    margin-top: 7px;
-}
-
-.user {
-    background: white;
-    padding: 12px 18px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.06);
-}
-
-/* البطاقات */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-}
-
-.card {
-    background: white;
-    padding: 22px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.06);
-}
-
-.card-icon {
-    font-size: 27px;
-}
-
-.card-number {
-    font-size: 30px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.card-title {
-    color: #6b7280;
-    margin-top: 5px;
-}
-
-/* الأقسام */
-.section {
-    background: white;
-    margin-top: 25px;
-    padding: 22px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.06);
-}
-
-.section h2 {
-    margin-bottom: 18px;
-}
-
-/* الأزرار السريعة */
-.quick-actions {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.quick-actions button {
-    border: none;
-    background: #edf5fa;
-    padding: 18px;
-    border-radius: 10px;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.quick-actions button:hover {
-    background: #dcecf6;
-}
-
-/* الجدول */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
-    text-align: right;
-}
-
-th {
-    color: #64748b;
-    font-size: 14px;
-}
-
-.status {
-    background: #e7f7ed;
-    color: #16804c;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-/* الهاتف */
-@media (max-width: 800px) {
-
-    .sidebar {
-        width: 70px;
-        padding: 15px 8px;
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #222;
     }
 
-    .logo {
-        font-size: 0;
+    header {
+      background: #166534;
+      color: white;
+      padding: 20px;
+      text-align: center;
     }
 
-    .logo::after {
-        content: "🔬";
-        font-size: 27px;
-    }
-
-    .subtitle {
-        display: none;
-    }
-
-    .menu button {
-        text-align: center;
-        font-size: 20px;
-        padding: 12px 5px;
-    }
-
-    .menu button span {
-        display: none;
-    }
-
-    .main {
-        margin-right: 70px;
-        padding: 15px;
-    }
-
-    .header {
-        display: block;
-    }
-
-    .header h1 {
-        font-size: 23px;
-    }
-
-    .user {
-        display: none;
-    }
-
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+    .container {
+      max-width: 1000px;
+      margin: 25px auto;
+      padding: 15px;
     }
 
     .card {
-        padding: 15px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
 
-    .card-number {
-        font-size: 24px;
-    }
-
-    .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .section {
-        overflow-x: auto;
+    h2 {
+      margin-top: 0;
     }
 
     table {
-        min-width: 600px;
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
     }
-}
-</style>
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: right;
+    }
+
+    th {
+      background: #e8f5e9;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 8px;
+      background: #f0f0f0;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- القائمة -->
-<aside class="sidebar">
+<header>
+  <h1>LAB-GEST</h1>
+  <p>تسيير مخبر العلوم</p>
+</header>
 
-    <div class="logo">
-        LAB-GEST
-    </div>
+<div class="container">
 
-    <div class="subtitle">
-        نظام تسيير المخبر المدرسي
-    </div>
+  <div class="card">
+    <h2>📦 العتاد والتجهيزات</h2>
+    <div id="message" class="message">جاري تحميل البيانات...</div>
 
-    <ul class="menu">
+    <table id="equipmentTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>اسم العتاد</th>
+          <th>رقم الجرد</th>
+          <th>الكمية</th>
+          <th>الحالة</th>
+          <th>المكان</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody id="equipmentBody"></tbody>
+    </table>
+  </div>
 
-        <li>
-            <button class="active">
-                🏠 <span>الرئيسية</span>
-            </button>
-        </li>
+</div>
 
-        <li>
-            <button>
-                📦 <span>العتاد والتجهيزات</span>
-            </button>
-        </li>
+<script>
+  const SUPABASE_URL = "https://mxpojwfvuthvajuerkun.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_2aQTLjb86tQJMFaZ0AZHYw__WHSQuP-";
 
-        <li>
-            <button>
-                🧪 <span>المواد والكواشف</span>
-            </button>
-        </li>
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-        <li>
-            <button>
-                🔢 <span>سجل الجرد</span>
-            </button>
-        </li>
+  async function loadEquipment() {
+    const message = document.getElementById("message");
+    const table = document.getElementById("equipmentTable");
+    const body = document.getElementById("equipmentBody");
 
-        <li>
-            <button>
-                📋 <span>الإعارات والاستعمال</span>
-            </button>
-        </li>
+    const { data, error } = await supabase
+      .from("equipment")
+      .select("*")
+      .order("id", { ascending: true });
 
-        <li>
-            <button>
-                👨‍🏫 <span>طلبات الأساتذة</span>
-            </button>
-        </li>
+    if (error) {
+      message.textContent = "حدث خطأ في تحميل العتاد: " + error.message;
+      return;
+    }
 
-        <li>
-            <button>
-                📝 <span>التقارير</span>
-            </button>
-        </li>
+    if (!data || data.length === 0) {
+      message.textContent = "لا توجد معدات مسجلة حاليًا.";
+      return;
+    }
 
-        <li>
-            <button>
-                📊 <span>الإحصائيات</span>
-            </button>
-        </li>
+    message.style.display = "none";
+    table.style.display = "table";
 
-        <li>
-            <button>
-                ⚙️ <span>الإعدادات</span>
-            </button>
-        </li>
+    body.innerHTML = "";
 
-    </ul>
+    data.forEach(item => {
+      const row = document.createElement("tr");
 
-</aside>
+      row.innerHTML = `
+        <td>${item.name ?? ""}</td>
+        <td>${item.inventory_number ?? ""}</td>
+        <td>${item.quantity ?? ""}</td>
+        <td>${item.condition ?? ""}</td>
+        <td>${item.location ?? ""}</td>
+        <td>${item.notes ?? ""}</td>
+      `;
 
+      body.appendChild(row);
+    });
+  }
 
-<!-- المحتوى الرئيسي -->
-
-<main class="main">
-
-    <header class="header">
-
-        <div>
-            <h1>لوحة التحكم</h1>
-            <p>مرحبًا بك في نظام تسيير المخبر المدرسي</p>
-        </div>
-
-        <div class="user">
-            👤 مسؤول المخبر
-        </div>
-
-    </header>
-
-
-    <!-- الإحصائيات -->
-
-    <section class="cards">
-
-        <div class="card">
-            <div class="card-icon">📦</div>
-            <div class="card-number">125</div>
-            <div class="card-title">
-                إجمالي التجهيزات
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-icon">🧪</div>
-            <div class="card-number">86</div>
-            <div class="card-title">
-                المواد والكواشف
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-icon">📋</div>
-            <div class="card-number">12</div>
-            <div class="card-title">
-                الإعارات الحالية
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-icon">⚠️</div>
-            <div class="card-number">7</div>
-            <div class="card-title">
-                تحتاج متابعة
-            </div>
-        </div>
-
-    </section>
-
-
-    <!-- الوصول السريع -->
-
-    <section class="section">
-
-        <h2>الوصول السريع</h2>
-
-        <div class="quick-actions">
-
-            <button>
-                ➕<br>
-                إضافة عتاد
-            </button>
-
-            <button>
-                🧪<br>
-                إضافة مادة
-            </button>
-
-            <button>
-                🔢<br>
-                تسجيل جرد
-            </button>
-
-            <button>
-                🖨️<br>
-                طباعة تقرير
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- آخر العمليات -->
-
-    <section class="section">
-
-        <h2>آخر العمليات</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>العملية</th>
-                    <th>العنصر</th>
-                    <th>التاريخ</th>
-                    <th>الحالة</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr>
-                    <td>إضافة</td>
-                    <td>راسم الاهتزاز</td>
-                    <td>25/08/2026</td>
-                    <td>
-                        <span class="status">تمت</span>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>إعارة</td>
-                    <td>Banc optique</td>
-                    <td>25/08/2026</td>
-                    <td>
-                        <span class="status">
-                            قيد الاستعمال
-                        </span>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>تعديل</td>
-                    <td>جهاز pH-mètre</td>
-                    <td>24/08/2026</td>
-                    <td>
-                        <span class="status">تمت</span>
-                    </td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </section>
-
-</main>
+  loadEquipment();
+</script>
 
 </body>
-  </html>
+</html>
