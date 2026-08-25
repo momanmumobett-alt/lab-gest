@@ -104,10 +104,10 @@
   );
 
   async function loadEquipment() {
-    const message = document.getElementById("message");
-    const table = document.getElementById("equipmentTable");
-    const body = document.getElementById("equipmentBody");
-
+  alert("الكود يعمل");
+  const message = document.getElementById("message");
+  const table = document.getElementById("equipmentTable");
+  const body = document.getElementById("equipmentBody");
     const { data, error } = await supabase
       .from("equipment")
       .select("*")
